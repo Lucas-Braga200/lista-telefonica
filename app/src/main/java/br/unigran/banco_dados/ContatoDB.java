@@ -42,4 +42,20 @@ public class ContatoDB {
         conexao.delete("contato", "id=?", new String[]{ id+"" });
         conexao.close();
     }
+
+    public void listar(List dados) {
+        dados.clear();
+        conexao = db.getReadableDatabase();
+        String names[] = {"id", "nome", "telefone", "dataNascimento"};
+        Cursor query = conexao.query("contato", names, null, null, null, null, "nome");
+        while (query.moveToNext()) {
+            Contato contato = new Contato();
+            contato.setId(Integer.parseInt(query.getString(0)));
+            contato.setNome(query.getString(1));
+            contato.setTelefone(query.getString(2));
+            contato.setDataNascimento(new Date(query.getString(3)));
+            dados.add(contato);
+        }
+        conexao.close();
+    }
 }
