@@ -14,7 +14,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(
-                "create table Contato(" +
+                "create table contato(" +
                         "id integer primary key autoincrement," +
                         "nome varchar(150)," +
                         "telefone varchar(15)," +
@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL(
-                "create table Contato(" +
+                "create table contato(" +
                         "id integer primary key autoincrement," +
                         "nome varchar(150)," +
                         "telefone varchar(15)," +
