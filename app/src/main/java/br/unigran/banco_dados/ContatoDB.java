@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import br.unigran.lista_telefonica.Contato;
 
@@ -44,18 +47,23 @@ public class ContatoDB {
     }
 
     public void listar(List dados) {
-        dados.clear();
-        conexao = db.getReadableDatabase();
-        String names[] = {"id", "nome", "telefone", "data_nascimento"};
-        Cursor query = conexao.query("contato", names, null, null, null, null, "nome");
-        while (query.moveToNext()) {
-            Contato contato = new Contato();
-            contato.setId(Integer.parseInt(query.getString(0)));
-            contato.setNome(query.getString(1));
-            contato.setTelefone(query.getString(2));
-            contato.setDataNascimento(new Date(query.getString(3)));
-            dados.add(contato);
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+            dados.clear();
+            conexao = db.getReadableDatabase();
+            String names[] = {"id", "nome", "telefone", "data_nascimento"};
+            Cursor query = conexao.query("contato", names, null, null, null, null, "nome");
+            while (query.moveToNext()) {
+                Contato contato = new Contato();
+                contato.setId(Integer.parseInt(query.getString(0)));
+                contato.setNome(query.getString(1));
+                contato.setTelefone(query.getString(2));
+                contato.setDataNascimento(formatter.parse(query.getString(3)));
+                dados.add(contato);
+            }
+            conexao.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        conexao.close();
     }
 }

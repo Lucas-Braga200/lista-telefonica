@@ -1,6 +1,8 @@
 package br.unigran.lista_telefonica;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Contato {
     private Integer id;
@@ -42,10 +44,12 @@ public class Contato {
 
     @Override
     public String toString() {
-        return "Contato{" +
-                "nome='" + nome + '\'' +
-                ", telefone='" + telefone + '\'' +
-                ", dataNascimento=" + dataNascimento +
-                '}';
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+            return nome + " " + telefone + " " + formatter.format(dataNascimento);
+        } catch (Exception e) {
+            System.out.println(e);
+            return nome + " " + telefone + " " + dataNascimento;
+        }
     }
 }
