@@ -1,7 +1,11 @@
 package br.unigran.banco_dados;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+
+import java.util.Date;
+import java.util.List;
 
 import br.unigran.lista_telefonica.Contato;
 
@@ -33,5 +37,9 @@ public class ContatoDB {
         conexao.close();
     }
 
-    
+    public void remover(Integer id) {
+        conexao = db.getWritableDatabase();
+        conexao.delete("contato", "id=?", new String[]{ id+"" });
+        conexao.close();
+    }
 }
