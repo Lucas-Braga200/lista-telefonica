@@ -22,4 +22,16 @@ public class ContatoDB {
         conexao.insertOrThrow("contato", null, valores);
         conexao.close();
     }
+
+    public void atualizar(Contato contato) {
+        conexao = db.getWritableDatabase();
+        ContentValues valores = new ContentValues();
+        valores.put("nome", contato.getNome());
+        valores.put("telefone", contato.getTelefone());
+        valores.put("dataNascimento", contato.getDataNascimento().toString());
+        conexao.update("contato", valores, "id = ?", new String[]{contato.getId().toString()});
+        conexao.close();
+    }
+
+    
 }
