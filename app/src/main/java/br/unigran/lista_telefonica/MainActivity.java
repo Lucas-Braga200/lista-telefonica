@@ -1,9 +1,12 @@
 package br.unigran.lista_telefonica;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,12 +47,16 @@ public class MainActivity extends AppCompatActivity {
 
             contatoDB.inserir(contato);
 
-            Toast.makeText(this, "Contato salvo com sucesso.", Toast.LENGTH_SHORT).show();
+            mostrarMensagem("Contato salvo com sucesso.");
 
             contatoDB.listar(dados);
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public void mostrarMensagem(String mensagem) {
+        Toast.makeText(this, mensagem, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -75,5 +82,29 @@ public class MainActivity extends AppCompatActivity {
         contatoDB = new ContatoDB(db);
 
         contatoDB.listar(dados);
+
+        listagem.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int j, long l) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+                alert.setMessage("Realmente quer remover?");
+                alert.setPositiveButton("remover", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        mostrarMensagem("Contato deletado com sucesso.");
+                        contatoDB.remover(dados.get(j).getId());
+                        contatoDB.listar(dados);
+                    }
+                });
+                alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                alert.create().show();
+                return false;
+            }
+        });
     }
 }
