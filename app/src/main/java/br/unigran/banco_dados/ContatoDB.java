@@ -22,7 +22,7 @@ public class ContatoDB {
         ContentValues valores = new ContentValues();
         valores.put("nome", contato.getNome());
         valores.put("telefone", contato.getTelefone());
-        valores.put("dataNascimento", contato.getDataNascimento().toString());
+        valores.put("data_nascimento", contato.getDataNascimento().toString());
         conexao.insertOrThrow("contato", null, valores);
         conexao.close();
     }
@@ -32,7 +32,7 @@ public class ContatoDB {
         ContentValues valores = new ContentValues();
         valores.put("nome", contato.getNome());
         valores.put("telefone", contato.getTelefone());
-        valores.put("dataNascimento", contato.getDataNascimento().toString());
+        valores.put("data_nascimento", contato.getDataNascimento().toString());
         conexao.update("contato", valores, "id = ?", new String[]{contato.getId().toString()});
         conexao.close();
     }
@@ -46,7 +46,7 @@ public class ContatoDB {
     public void listar(List dados) {
         dados.clear();
         conexao = db.getReadableDatabase();
-        String names[] = {"id", "nome", "telefone", "dataNascimento"};
+        String names[] = {"id", "nome", "telefone", "data_nascimento"};
         Cursor query = conexao.query("contato", names, null, null, null, null, "nome");
         while (query.moveToNext()) {
             Contato contato = new Contato();
