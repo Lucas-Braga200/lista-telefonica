@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     DBHelper db;
     ContatoDB contatoDB;
 
+    Integer atualizando;
+
     public void salvar(View view) {
         try {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
@@ -45,14 +47,44 @@ public class MainActivity extends AppCompatActivity {
             contato.setTelefone(telefone.getText().toString());
             contato.setDataNascimento(formatter.parse(dataNascimento.getText().toString()));
 
-            contatoDB.inserir(contato);
+            if (atualizando != null) {
+                contato.setId(atualizando);
+            }
 
-            mostrarMensagem("Contato salvo com sucesso.");
+            if (atualizando == null) {
+                contatoDB.inserir(contato);
+                mostrarMensagem("Contato salvo com sucesso.");
+            } else {
+                contatoDB.atualizar(contato);
+                mostrarMensagem("Contato atualizado com sucesso.");
+            }
 
+            toggleEstadoAtualizacao(null);
+            limparCampos();
             contatoDB.listar(dados);
         } catch (Exception e) {
             System.out.println(e);
         }
+    }
+
+    public void toggleEstadoAtualizacao(Integer id) {
+        if (id == null) {
+            atualizando = null;
+        } else {
+            atualizando = id;
+        }
+    }
+
+    public void limparCampos() {
+        nome.setText("");
+        telefone.setText("");
+        dataNascimento.setText("");
+    }
+
+    public void cancelarAtualizacao() {
+        toggleEstadoAtualizacao(null);
+        limparCampos();
+        mostrarMensagem("Edição cancelada.");
     }
 
     public void mostrarMensagem(String mensagem) {
@@ -106,5 +138,38 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+        listagem.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                AlertDialog.Builder alert = new AlertDialog.Builder(view.getContext());
+                alert.setMessage("Realmente quer editar?");
+                alert.setPositiveButton("Editar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int j) {
+                        try {
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-mm-dd", Locale.ENGLISH);
+                            toggleEstadoAtualizacao(dados.get(i).getId());
+                            nome.setText(dados.get(i).getNome());
+                            telefone.setText(dados.get(i).getTelefone());
+                            dataNascimento.setText(formatter.format(dados.get(i).getDataNascimento()));
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                    }
+                });
+                alert.setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                });
+                alert.create().show();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelarAtualizacao();
     }
 }
